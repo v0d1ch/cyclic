@@ -1,18 +1,35 @@
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE RankNTypes     #-}
+
 module Cyclic
   ( Cyclic(..)
   ) where
 
-class (Eq a, Enum a, Bounded a) =>
+import GHC.Enum
+
+class (Eq a, Bounded a, Enum a) =>
       Cyclic a where
-  rev :: a -> a
-  rev c
-    | c == minBound = maxBound
-    | c == maxBound = minBound
-    | otherwise = pred c
+  ffw :: Int -> a -> a
+  ffw = calc
 
-  ffw :: a -> a
-  ffw c
-    | c == minBound = maxBound
-    | c == maxBound = minBound
-    | otherwise = succ c
+  rev :: Int -> a -> a
+  rev = calc
 
+calc :: (Bounded a, Enum a) => Int -> a -> a
+calc n x = l !! n
+  where
+    t = allValues :: [a]
+    l = take (n + (length t)) (cycle (boundedEnumFrom x))
+
+allValues :: (Bounded a, Enum a) => [a]
+allValues = [(minBound :: a) ..]
+
+data Days
+  = Mon
+  | Tue
+  | Wed
+  | Thu
+  | Fri
+  | Sat
+  | Sun
+  deriving (Eq, Show, Bounded, Enum, Cyclic)
