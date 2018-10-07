@@ -1,6 +1,5 @@
-{-# LANGUAGE DeriveAnyClass      #-}
-{-# LANGUAGE RankNTypes          #-}
-{-# LANGUAGE DeriveDataTypeable  #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Cyclic
   ( Cyclic(..)
@@ -13,29 +12,23 @@ import Data.Maybe (fromMaybe)
 class (Eq a, Data a) =>
       Cyclic a where
   ffw :: Int -> a -> a
-  ffw = calc
-
+  ffw = calc (+)
   rev :: Int -> a -> a
-  rev = calc
+  rev = calc (-)
 
-calc :: (Eq a, Data a) => Int -> a -> a
-calc n x = l !! ((calcIndex n len) + cIndex)
+calc
+  :: (Eq a, Data a)
+  => (Int -> Int -> Int) -> Int -> a -> a
+calc f n x = l !! ((calcIndex n len) + cIndex)
   where
     t = map fromConstr (dataTypeConstrs $ constrType (toConstr x))
     cIndex = fromMaybe 0 (elemIndex x t)
     len = length t
     l = take (len * 2 + n) (cycle t)
     calcIndex ui ll =
-        if ui >= ll then mod ui ll
-           else if ui <= ll then ui
-           else ui
+      if ui >= ll
+        then mod ui ll
+        else if ui <= ll
+               then ll `f` ui
+               else ui
 
-data Days
-  = Mon
-  | Tue
-  | Wed
-  | Thu
-  | Fri
-  | Sat
-  | Sun
-  deriving (Eq, Show, Bounded, Enum, Typeable, Data, Cyclic)
