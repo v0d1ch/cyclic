@@ -2,8 +2,7 @@
 
 #### Provide cyclic behaviour to you Sum ADTs
 
-- Example:
- Consider you have a following datatype
+Consider you have a following datatype
 
 ```
 data Days
