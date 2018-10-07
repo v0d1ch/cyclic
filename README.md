@@ -1,4 +1,4 @@
-# cyclic
+# Cyclic
 
 #### Provide cyclic behaviour to you Sum ADTs
 
