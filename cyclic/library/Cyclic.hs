@@ -1,13 +1,16 @@
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE RankNTypes     #-}
+{-# LANGUAGE DeriveAnyClass      #-}
+{-# LANGUAGE RankNTypes          #-}
+{-# LANGUAGE DeriveDataTypeable  #-}
 
 module Cyclic
   ( Cyclic(..)
   ) where
 
-import GHC.Enum
+import Data.Data
+import Data.List (elemIndex)
+import Data.Maybe (fromMaybe)
 
-class (Eq a, Bounded a, Enum a) =>
+class (Eq a, Data a) =>
       Cyclic a where
   ffw :: Int -> a -> a
   ffw = calc
@@ -15,14 +18,17 @@ class (Eq a, Bounded a, Enum a) =>
   rev :: Int -> a -> a
   rev = calc
 
-calc :: (Bounded a, Enum a) => Int -> a -> a
-calc n x = l !! n
+calc :: (Eq a, Data a) => Int -> a -> a
+calc n x = l !! ((calcIndex n len) + cIndex)
   where
-    t = allValues :: [a]
-    l = take (n + (length t)) (cycle (boundedEnumFrom x))
-
-allValues :: (Bounded a, Enum a) => [a]
-allValues = [(minBound :: a) ..]
+    t = map fromConstr (dataTypeConstrs $ constrType (toConstr x))
+    cIndex = fromMaybe 0 (elemIndex x t)
+    len = length t
+    l = take (len * 2 + n) (cycle t)
+    calcIndex ui ll =
+        if ui >= ll then mod ui ll
+           else if ui <= ll then ui
+           else ui
 
 data Days
   = Mon
@@ -32,4 +38,4 @@ data Days
   | Fri
   | Sat
   | Sun
-  deriving (Eq, Show, Bounded, Enum, Cyclic)
+  deriving (Eq, Show, Bounded, Enum, Typeable, Data, Cyclic)
