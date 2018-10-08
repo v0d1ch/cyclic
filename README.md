@@ -1,7 +1,11 @@
 # Cyclic
 
 ##### Provide cyclic behaviour to you Sum ADTs
+
+
 ![](https://i.stack.imgur.com/06m8k.jpg)
+
+
 Consider the following datatype
 
 ```
