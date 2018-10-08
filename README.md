@@ -1,8 +1,8 @@
 # Cyclic
 
-#### Provide cyclic behaviour to you Sum ADTs
-
-Consider you have a following datatype
+##### Provide cyclic behaviour to you Sum ADTs
+![](https://i.stack.imgur.com/06m8k.jpg)
+Consider the following datatype
 
 ```
 data Days
@@ -16,8 +16,9 @@ data Days
   deriving (Eq, Show, Data, Cyclic)
 ```
 
-Cyclic provides `ffw` and `rev` functions that can be used to
-cycle trough the constructors number of times provided by the user.
+***Cyclic*** provides `ffw` and `rev` functions that can be used to cycle trough the data constructors.
+
+User needs to specify the number to use to calculate the resulting constructor and the starting constructor.
 
 ```
 ghci > rev 2 Mon
