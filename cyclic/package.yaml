@@ -4,15 +4,12 @@ github: "v0d1ch/cyclic"
 license: MIT
 author: "Sasa Bogicevic"
 maintainer: "Sasa Bogicevic"
-synopsis: A class providing cyclic behaviour
+synopsis: A class providing cyclic behaviour for Sum types
 description: Cyclic class defines cyclic behaviour
              providing ffw and rev functions
 
 extra-source-files:
-- CHANGELOG.md
-- LICENSE.md
 - package.yaml
-- README.md
 - stack.yaml
 
 ghc-options: -Wall
@@ -29,8 +26,7 @@ tests:
     dependencies:
     - base
     - cyclic
-    - tasty
-    - tasty-hspec
+    - hedgehog
     ghc-options:
     - -rtsopts
     - -threaded

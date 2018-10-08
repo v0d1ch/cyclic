@@ -1,17 +1,46 @@
--- Tasty makes it easy to test your code. It is a test framework that can
--- combine many different types of tests into one suite. See its website for
--- help: <http://documentup.com/feuerbach/tasty>.
-import qualified Test.Tasty
--- Hspec is one of the providers for Tasty. It provides a nice syntax for
--- writing tests. Its website has more info: <https://hspec.github.io>.
-import Test.Tasty.Hspec
+{-# LANGUAGE TemplateHaskell    #-}
+{-# LANGUAGE DeriveAnyClass     #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+
+import           Hedgehog
+import qualified Hedgehog.Gen as Gen
+import qualified Hedgehog.Range as Range
+import Data.Data
+import Cyclic
+
+data Days
+  = Mon
+  | Tue
+  | Wed
+  | Thu
+  | Fri
+  | Sat
+  | Sun
+  deriving (Eq, Show, Data, Cyclic)
+
+prop_ffv :: Property
+prop_ffv =
+  property $ do
+    number <- forAll $ Gen.int (Range.constantFrom 1 300 1000)
+    let number2 = number + 7
+        res = ffw number Mon
+        res2 = ffw number2 Mon
+    res === res2
+
+prop_rev :: Property
+prop_rev =
+  property $ do
+    number <- forAll $ Gen.int (Range.constantFrom 1 300 1000)
+    let number2 = number + 7
+        res = rev number Mon
+        res2 = rev number2 Mon
+    res === res2
+
+tests :: IO Bool
+tests =
+  checkParallel $$(discover)
 
 main :: IO ()
 main = do
-    test <- testSpec "cyclic" spec
-    Test.Tasty.defaultMain test
-
-spec :: Spec
-spec = parallel $ do
-    it "is trivially true" $ do
-        True `shouldBe` True
+  _ <- tests
+  return ()
