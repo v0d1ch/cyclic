@@ -25,10 +25,8 @@ calc f n x = l !! ((calcIndex n len) + cIndex)
     cIndex = fromMaybe 0 (elemIndex x t)
     len = length t
     l = take (len * 2 + n) (cycle t)
-    calcIndex ui ll =
-      if ui >= ll
-        then mod ui ll
-        else if ui <= ll
-               then ll `f` ui
-               else ui
+    calcIndex ui ll
+      | ui >= ll = mod ui ll
+      | ui <= ll = ll `f` ui
+      | otherwise = ui
 
